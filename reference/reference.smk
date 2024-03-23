@@ -80,6 +80,10 @@ rule reference_rule:
     priority: 50
     shadow: "shallow"
     group: "mygroup"
+    retries: 
+        3
+    envmodules:
+        "module load foo"
     singularity:
         "docker://something/here"
     container:
@@ -166,3 +170,46 @@ rule samtools_sort:
     cwl:
         "https://github.com/common-workflow-language/workflows/blob/"
         "fb406c95/tools/samtools-sort.cwl"
+
+storage gcs: 
+    provider="gs",
+    max_requests_per_second="test",
+    project="test",
+    keep_local="test",
+    stay_on_remote="test",
+    retries="test",
+    username="test",
+    password="test",
+    active_mode="test",
+    endpoint_url="test",
+    restricted_access_token="test",
+    access_key="test",
+    secret_key="test",
+    token="test",
+    signature_version="test",
+    not_sync_mtime="test",
+    host="test",
+    timeout="test",
+    sandbox="test"
+
+rule storage:
+    input:
+        storage.gcs("test.txt"),
+        another_input = storage.ftp("test2.txt"),
+        another_input = storage.http("test3.txt"),
+
+rule functions:
+    input:
+        branch(
+            condition = use_sometool,
+            then="results/sometool/{dataset}.txt",
+            otherwise="results/someresult/{dataset}.txt",
+            cases = "testing"
+        ),
+        multiext("some/plot", ".pdf", ".svg", ".png"),
+        expand("test.{ext}.txt", ext=["a", "b", "c"])
+
+def use_sometool(wildcards):
+    # determine whether the tool shall be used based on the wildcard values.
+    ...
+
