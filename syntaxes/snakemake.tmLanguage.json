@@ -7,6 +7,15 @@
   ],
   "patterns": [
     {
+      "include": "#storage"
+    },
+    {
+      "include": "#storageparams"
+    },
+    {
+      "include": "#storageusage"
+    },
+    {
       "include": "#configs"
     },
     {
@@ -24,10 +33,43 @@
   ],
   "repository": {
     "configs": {
-      "match": "(?x)\n  ^\\s* # Leading whitespace\n  (configfile|include|localrules|onerror|onstart|onsuccess|ruleorder|snakefile|workdir|pepfile|pepschema) # Keywords\n  : # Ending in colon\n",
+      "match": "(?x)\n  ^\\s* # Leading whitespace\n  (configfile|envvars|module|scattergather|include|localrules|onerror|onstart|onsuccess|ruleorder|snakefile|workdir|pepfile|pepschema) # Keywords\n  : # Ending in colon\n",
       "captures": {
         "1": {
           "name": "keyword.control.snakemake.config"
+        }
+      }
+    },
+    "storage":{
+      "match": "(?x)\n  ^\\s* # Leading whitespace\n  (storage) # Keywords\n  (?:\\s+(\\w+))? # Optional storage name\n  : # Ending in colon\n",
+      "captures": {
+        "1": {
+          "name": "keyword.snakemake.storage"
+        },
+        "2": {
+          "name": "keyword.snakemake.storage.type"
+        }
+      }
+    },
+    "storageparams":{
+      "match": "(?x)\n  ^\\s* # Leading whitespace\n  (provider|max_requests_per_second|project|keep_local|stay_on_remote|retries|username|password|active_mode|endpoint_url|restricted_access_token|access_key|secret_key|token|signature_version|not_sync_mtime|host|timeout|sandbox) # Keywords\n  = # Ending in equal sign\n",
+      "captures": {
+        "1": {
+          "name": "keyword.snakemake.storage.params"
+        }
+      }
+    },
+    "storageusage":{
+      "match": "(?x)\n  ^\\s* # Leading whitespace\n  (?:\\w+\\s*=\\s*)? # Optional variable assignment, non-capturing\n  (storage) # Keywords\n  \\.\n  (\\w+)\n  \\(\n  (.*)\n  \\)\n  ,? # Optional comma\n",      
+      "captures": {
+        "1": {
+          "name": "keyword.snakemake.storage"
+        },
+        "2": {
+          "name": "keyword.snakemake.storage.type"
+        },
+        "3": {
+          "name": "string.snakemake.storage.content"
         }
       }
     },
@@ -43,7 +85,7 @@
       }
     },
     "ruleparams": {
-      "match": "(?x)\n  ^\\s* # Leading whitespace\n  (benchmark|conda|cwl|group|input|log|message|notebook|output|params|priority|resources|run|script|shadow|shell|singularity|threads|version|wildcard_constraints|wrapper|default_target|template_engine|handover) # Keywords\n  : # Ending in colon\n",
+      "match": "(?x)\n  ^\\s* # Leading whitespace\n  (benchmark|retries|conda|pepfile|pepschema|container|shellcmd|name|norun|conda_env|envmodules|container_img|containerized|is_containerized|envmodules|shadow_depth|docstring|notebook|template_engine|cache|path_modifier|handover|default_target|localrule|cwl|group|input|log|message|notebook|output|params|priority|resources|run|script|shadow|shell|singularity|threads|version|wildcard_constraints|wrapper|default_target|template_engine|handover) # Keywords\n  : # Ending in colon\n",
       "captures": {
         "1": {
           "name": "keyword.control.snakemake.ruleparam"
@@ -51,12 +93,16 @@
       }
     },
     "functions": {
-      "match": "\\b(ancient|directory|expand|pipe|protected|temp|touch|unpack|report)\\b",
-      "captures": {
-        "1": {
-          "name": "support.function.builtin.snakemake"
+      "patterns": [
+        {
+          "match": "\\b(ancient|directory|expand|pipe|protected|temp|touch|unpack|report|multiext)\\b",
+          "captures": {
+            "1": {
+              "name": "support.function.builtin.snakemake"
+            }
+          }
         }
-      }
+      ]
     }
   }
 }
